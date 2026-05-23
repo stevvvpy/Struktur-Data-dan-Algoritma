@@ -48,11 +48,20 @@ def buat_linkedlist(df):
 
     return role_dict
 
-def cari_role(role_dict, target_role):
-    if target_role in role_dict:
-        print(f"Role: {target_role}")
-        print("Nama: ", end="")
-        role_dict[target_role].print()
+def cari_role(data, target_role):
+    target_role_clean = str(target_role).lower()
+    
+    role_ditemukan = None
+    for key in data.keys():
+        key_clean = str(key).lower().replace(" ", "")
+        if key_clean in target_role_clean:
+            role_ditemukan = key
+            break
+
+    if role_ditemukan:
+        print(f"Role: {role_ditemukan}")
+        print(f"Nama: ", end="")
+        data[role_ditemukan].print()
         print("-" * 30)
     else:
         print(f"Role {target_role} tidak ditemukan.")
@@ -77,10 +86,13 @@ def main():
     pilihan = int(input("Masukkan pilihan: "))
     if pilihan == 1:
         print("Masukkan role pekerjaan: ")
-        target_role = input()
         df = read_data()
-        cari_role(buat_linkedlist(df), target_role)
+        data_linkedlist = buat_linkedlist(df)
+        print("Role yang tersedia: " + ", ".join(data_linkedlist.keys()))
+        target_role = input()
+        cari_role(data_linkedlist, target_role)
         print("Tekan enter untuk kembali ke menu utama")
+        input()
         
     if pilihan == 2:
         print("Maaf fitur belum tersedia")
