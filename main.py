@@ -40,8 +40,6 @@ class Linkedlist:
     
 # Untuk data sheet 1    
 def buat_linkedlist(df):
-    if 'ID' in df.columns:
-        df = df.drop(columns=['ID'])
     role_dict = {}
 
     for index, row in df.iterrows():
@@ -139,7 +137,7 @@ def print_all(data):
 
 
 # All Program
-def main():
+def main(data_linkedlist1, data_teman):
     print("Halo ! Okaeri !!!")
     print("==================")
     print("Apa keperluanmu?")
@@ -151,26 +149,18 @@ def main():
     pilihan = int(input("Masukkan pilihan: "))
     if pilihan == 1:
         print("Masukkan role pekerjaan: ")
-        df = read_data()
-        data_linkedlist = buat_linkedlist(df)
-        print("Role yang tersedia: " + ", ".join(data_linkedlist.keys()))
+        print("Role yang tersedia: " + ", ".join(data_linkedlist1.keys()))
         target_role = input()
-        cari_role(data_linkedlist, target_role)
+        cari_role(data_linkedlist1, target_role)
         print("Tekan enter untuk kembali ke menu utama")
         input()
         
     if pilihan == 2:
-        df_convert = read_data()
-        df = read_data_connection()
-        data_teman = encode_ke_nama(df_convert, df)
-        data_teman = buat_linkedlist_teman(df)
         print_nama_teman(data_teman)
         print("Tekan enter untuk kembali ke menu utama")
         input()
     if pilihan == 3:
-        df = read_data()
-        role_dict = buat_linkedlist(df)
-        print_all(role_dict)
+        print_all(data_linkedlist1)
         print("Tekan enter untuk kembali ke menu utama")
         input()
     if pilihan == 0:
@@ -178,5 +168,11 @@ def main():
         exit()
 
 if __name__ == "__main__":
+    df_sheet_role = read_data()
+    df_sheet_friend = read_data_connection()
+
+    data_linkedlist1 = buat_linkedlist(df_sheet_role)
+    data_teman = encode_ke_nama(df_sheet_role, df_sheet_friend)
+    data_teman = buat_linkedlist_teman(df_sheet_friend)
     while True:
-        main()
+        main(data_linkedlist1, data_teman)
