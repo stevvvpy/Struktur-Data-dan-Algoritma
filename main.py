@@ -5,11 +5,19 @@ def read_data():
     df = pd.read_csv(url)
     return df
 
+def read_data_connection():
+    sheet_name = 'Relasi'
+    sheet_id = '1hvHhvVt4hoXvf2x321Z0qai6COMDHSRw'
+    df_pembobotan = f'https://docs.google.com/spreadsheets/d/{sheet_id}/gviz/tq?tqx=out:csv&sheet={sheet_name}'
+
+    df = pd.read_csv(df_pembobotan)
+    return df
+
 # Membuat node
 class node:
     def __init__(self, data):
-        self.data = data    # Rolenya
-        self.next = None    # Nama
+        self.data = data    # Rolenya atau nama
+        self.next = None    # Nama atau temannya
     
 class Linkedlist:
     def __init__(self):
@@ -30,6 +38,7 @@ class Linkedlist:
             temp = temp.next
         print("None")
     
+# Untuk data sheet 1    
 def buat_linkedlist(df):
     if 'ID' in df.columns:
         df = df.drop(columns=['ID'])
@@ -48,6 +57,52 @@ def buat_linkedlist(df):
 
     return role_dict
 
+# Untuk data sheet 2
+def sorting_data(df):
+    df = df.sort_values(by=['Bobot'], ascending=True)
+    return df
+
+def encode_ke_nama(df_convert, df_teman):
+    '''
+    Mengubah ID nama sebagai dictionary dan menggconvertnya ke nama asli
+    '''
+    df_convert = df_convert.set_index('ID')['Nama'].to_dict()
+    df_teman['Source'] = df_teman['Source'].map(df_convert)
+    df_teman['Target'] = df_teman['Target'].map(df_convert)
+    return df_teman
+
+def buat_linkedlist_teman(df):
+    '''
+    Membuat linkedlist teman dengan 
+    1. Menghapus kolom Relasi
+    2. Menghapus kolom Skill
+    3. Membuat dictionary dengan key sebagai source dan value sebagai Linkedlist
+       Note: Value disusun berdasarkan bobot secara berurut
+    '''
+    df = sorting_data(df)
+    # Menghapus kolom relasi dan skill
+    if 'Relasi' in df.columns:
+        df = df.drop(columns=['Relasi'])
+    if 'Skill' in df.columns:
+        df = df.drop(columns=['Skill'])
+    
+    # Membuat dictionary
+    source_dict = {}
+
+    for index, row in df.iterrows():
+        source = row['Source']
+        target = row['Target']
+
+        # Jika Role belum pernah terdaftar di dictionary
+        if source not in source_dict:
+            source_dict[source] = Linkedlist()
+
+        # Tambahkan nama
+        source_dict[source].add(target+ " (" + str(row['Bobot']) + ")")
+
+    return source_dict
+
+# Fitur 1
 def cari_role(data, target_role):
     target_role_clean = str(target_role).lower()
     
@@ -66,6 +121,16 @@ def cari_role(data, target_role):
     else:
         print(f"Role {target_role} tidak ditemukan.")
 
+# Fitur 2
+def print_nama_teman(data_teman):
+    for nama, objek_list in data_teman.items():
+        print(f"Nama dan teman berdasarkan bobot")
+        print(f"Nama: {nama}")
+        print("Teman: ", end="")
+        objek_list.print()
+        print("-" * 30)
+
+# Fitur 3
 def print_all(data):
     for role, objek_list in data.items():
         print(f"Role: {role}")
@@ -73,13 +138,13 @@ def print_all(data):
         print("-" * 30)
 
 
-
+# All Program
 def main():
     print("Halo ! Okaeri !!!")
     print("==================")
     print("Apa keperluanmu?")
     print("1. Mencari role pekerjaan")
-    print("2. Mencari nama orang")
+    print("2. Mencari nama teman")
     print("3. Menampilkan semua data")
     print("0. Keluar")
     
@@ -95,7 +160,11 @@ def main():
         input()
         
     if pilihan == 2:
-        print("Maaf fitur belum tersedia")
+        df_convert = read_data()
+        df = read_data_connection()
+        data_teman = encode_ke_nama(df_convert, df)
+        data_teman = buat_linkedlist_teman(df)
+        print_nama_teman(data_teman)
         print("Tekan enter untuk kembali ke menu utama")
         input()
     if pilihan == 3:
