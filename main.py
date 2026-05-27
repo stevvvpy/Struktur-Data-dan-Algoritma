@@ -31,7 +31,7 @@ class Linkedlist:
         new_node.next = self.head
         self.head = new_node
 
-    def print(self):
+    def print_data(self):
         temp = self.head
         while temp:
             print(temp.data, end=" -> ")
@@ -60,7 +60,7 @@ def sorting_data(df):
     df = df.sort_values(by=['Bobot'], ascending=True)
     return df
 
-def encode_ke_nama(df_convert, df_teman):
+def decode_ke_nama(df_convert, df_teman):
     '''
     Mengubah ID nama sebagai dictionary dan menggconvertnya ke nama asli
     '''
@@ -104,7 +104,7 @@ def buat_linkedlist_teman(df):
 def print_all(data):
     for role, objek_list in data.items():
         print(f"Role: {role}")
-        objek_list.print()
+        objek_list.print_data()
         print("-" * 30)
 
 # Fitur 2
@@ -121,7 +121,7 @@ def cari_role(data, target_role):
     if role_ditemukan:
         print(f"Role: {role_ditemukan}")
         print(f"Nama: ", end="")
-        data[role_ditemukan].print()
+        data[role_ditemukan].print_data()
         print("-" * 30)
     else:
         print(f"Role {target_role} tidak ditemukan.")
@@ -132,20 +132,39 @@ def print_nama_teman(data_teman):
         print(f"Nama dan teman berdasarkan bobot")
         print(f"Nama: {nama}")
         print("Teman: ", end="")
-        objek_list.print()
+        objek_list.print_data()
         print("-" * 30)
 
-# Fitur 4
-def nama (data, nama_dituju):
+# Fitur 4: Cari nama dan statusnya
+def fitur_4_role (data, nama_dituju):
     nama_dituju = nama_dituju.replace(" ", "")
     for role, orang in data.items():
         temp = orang.head
         while temp is not None:
             if temp.data.lower() == nama_dituju.lower():
-                print(f'ketemu {temp.data} punya role yaitu  {role}')
+                print(f'Nama: {temp.data}')
+                print(f'Role: {role}')
+                print("-" * 30)
                 return
             temp = temp.next
-    print(f'Data nama {nama_dituju} tidak ditemukan')
+            
+
+def fitur_4_teman(data_teman, nama_dituju):
+    nama_dituju = nama_dituju.replace(" ", "")
+
+    nama_ditemukan = None
+    for key in data_teman.keys():
+        key_clean = str(key).lower().replace(" ", "")
+        if nama_dituju.lower() == key_clean:
+            nama_ditemukan = key
+            break
+
+    if nama_ditemukan:
+        print("Teman: ", end="")
+        data_teman[nama_ditemukan].print_data()
+        print("-" * 30)
+    else:
+        print(f"Nama {nama_dituju} tidak ditemukan.")
 
 # All Program
 def main(data_linkedlist1, data_teman):
@@ -159,7 +178,14 @@ def main(data_linkedlist1, data_teman):
 
     print("0. Keluar")
     
-    pilihan = int(input("Masukkan pilihan: "))
+    pilihan = input("Masukkan pilihan: ")
+
+    try:
+        pilihan = int(pilihan)
+    except:
+        print("Tolong masukkan angka yang sesuai")
+        print("Tekan enter untuk kembali ke menu utama")
+        input()
 
     if pilihan == 1:
         print_all(data_linkedlist1)
@@ -180,27 +206,27 @@ def main(data_linkedlist1, data_teman):
         input()
 
     elif pilihan == 4:
-        namadituju = input('Siapa namanya?')
-        nama(data_linkedlist1, namadituju)
+        namadituju = input('Siapa namanya? ')
+        try:
+            fitur_4_role(data_linkedlist1, namadituju)
+            fitur_4_teman(data_teman, namadituju)
+        except:
+            print("Nama tidak ditemukan")
         print("Tekan enter untuk kembali ke menu utama")
         input()
 
     elif pilihan == 0:
         print("Terima kasih telah menggunakan program ini")
         exit()
+
     
-    else:
-        print("Pilihan tidak tersedia.")
-        print("Tolong masukkan angka yang benar")
-        print("Tekan enter untuk kembali ke menu utama")
-        input()
 
 if __name__ == "__main__":
     df_sheet_role = read_data()
     df_sheet_friend = read_data_connection()
 
     data_linkedlist1 = buat_linkedlist(df_sheet_role)
-    data_teman = encode_ke_nama(df_sheet_role, df_sheet_friend)
+    data_teman = decode_ke_nama(df_sheet_role, df_sheet_friend)
     data_teman = buat_linkedlist_teman(df_sheet_friend)
     while True:
         main(data_linkedlist1, data_teman)
