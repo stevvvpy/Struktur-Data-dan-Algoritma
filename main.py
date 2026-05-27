@@ -101,6 +101,13 @@ def buat_linkedlist_teman(df):
     return source_dict
 
 # Fitur 1
+def print_all(data):
+    for role, objek_list in data.items():
+        print(f"Role: {role}")
+        objek_list.print()
+        print("-" * 30)
+
+# Fitur 2
 def cari_role(data, target_role):
     target_role_clean = str(target_role).lower()
     
@@ -119,7 +126,7 @@ def cari_role(data, target_role):
     else:
         print(f"Role {target_role} tidak ditemukan.")
 
-# Fitur 2
+# Fitur 3
 def print_nama_teman(data_teman):
     for nama, objek_list in data_teman.items():
         print(f"Nama dan teman berdasarkan bobot")
@@ -128,44 +135,65 @@ def print_nama_teman(data_teman):
         objek_list.print()
         print("-" * 30)
 
-# Fitur 3
-def print_all(data):
-    for role, objek_list in data.items():
-        print(f"Role: {role}")
-        objek_list.print()
-        print("-" * 30)
-
+# Fitur 4
+def nama (data, nama_dituju):
+    nama_dituju = nama_dituju.replace(" ", "")
+    for role, orang in data.items():
+        temp = orang.head
+        while temp is not None:
+            if temp.data.lower() == nama_dituju.lower():
+                print(f'ketemu {temp.data} punya role yaitu  {role}')
+                return
+            temp = temp.next
+    print(f'Data nama {nama_dituju} tidak ditemukan')
 
 # All Program
 def main(data_linkedlist1, data_teman):
     print("Halo ! Okaeri !!!")
     print("==================")
     print("Apa keperluanmu?")
-    print("1. Mencari role pekerjaan")
-    print("2. Mencari nama teman")
-    print("3. Menampilkan semua data")
+    print("1. Menampilkan semua role pekerjaan")
+    print("2. Mencari role pekerjaan")
+    print("3. Menampilkan koneksi")
+    print("4. Mencari status berdasarkan nama")
+
     print("0. Keluar")
     
     pilihan = int(input("Masukkan pilihan: "))
+
     if pilihan == 1:
+        print_all(data_linkedlist1)
+        print("Tekan enter untuk kembali ke menu utama")
+        input()
+
+    elif pilihan == 2:
         print("Masukkan role pekerjaan: ")
         print("Role yang tersedia: " + ", ".join(data_linkedlist1.keys()))
         target_role = input()
         cari_role(data_linkedlist1, target_role)
         print("Tekan enter untuk kembali ke menu utama")
         input()
-        
-    if pilihan == 2:
+
+    elif pilihan == 3:
         print_nama_teman(data_teman)
         print("Tekan enter untuk kembali ke menu utama")
         input()
-    if pilihan == 3:
-        print_all(data_linkedlist1)
+
+    elif pilihan == 4:
+        namadituju = input('Siapa namanya?')
+        nama(data_linkedlist1, namadituju)
         print("Tekan enter untuk kembali ke menu utama")
         input()
-    if pilihan == 0:
+
+    elif pilihan == 0:
         print("Terima kasih telah menggunakan program ini")
         exit()
+    
+    else:
+        print("Pilihan tidak tersedia.")
+        print("Tolong masukkan angka yang benar")
+        print("Tekan enter untuk kembali ke menu utama")
+        input()
 
 if __name__ == "__main__":
     df_sheet_role = read_data()
