@@ -112,6 +112,9 @@ def cari_role(data, target_role, proses):
     target_role_clean = str(target_role).lower()
     
     proses = True if proses.lower() == 'y' else False
+    if proses:
+        print("Melakukan pencarian menggunakan BFS (Breadth First Search)")
+        print('-'*30)
     role_ditemukan = None
     for key in data.keys():
         key_clean = str(key).lower()
@@ -152,7 +155,7 @@ def fitur_4_role (data, nama_dituju, proses):
     nama_dituju = nama_dituju.replace(" ", "")
     proses = True if proses.lower() == 'y' else False
     if proses:
-        print("Melakukan pencarian menggunakan DFS")
+        print("Melakukan pencarian menggunakan DFS (Depth First Search)")
         print('-'*30)
     for role, orang in data.items():
         temp = orang.head
@@ -182,7 +185,7 @@ def fitur_4_teman(data_teman, nama_dituju, proses):
     nama_dituju = nama_dituju.replace(" ", "")
 
     if proses:
-        print("Melakukan pencarian menggunakan BFS")
+        print("Melakukan pencarian menggunakan BFS (Breadth First Search)")
         print('-'*30)
 
     nama_ditemukan = None
