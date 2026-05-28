@@ -108,15 +108,23 @@ def print_all(data):
         print("-" * 30)
 
 # Fitur 2
-def cari_role(data, target_role):
+def cari_role(data, target_role, proses):
     target_role_clean = str(target_role).lower()
     
+    proses = True if proses.lower() == 'y' else False
     role_ditemukan = None
     for key in data.keys():
-        key_clean = str(key).lower().replace(" ", "")
-        if key_clean in target_role_clean:
+        key_clean = str(key).lower()
+        if proses:
+            print(f"Apakah role {key} mengandung kata {target_role}?")
+        if target_role_clean in key_clean:
             role_ditemukan = key
+            if proses:
+                print("Ya")
             break
+        else:
+            if proses:
+                print("Tidak")
 
     if role_ditemukan:
         print(f"Role: {role_ditemukan}")
@@ -129,37 +137,69 @@ def cari_role(data, target_role):
 # Fitur 3
 def print_nama_teman(data_teman):
     for nama, objek_list in data_teman.items():
-        print(f"Nama dan teman berdasarkan bobot")
+        print(f"Nama dan teman berdasarkan bobot relasi dan skill")
         print(f"Nama: {nama}")
         print("Teman: ", end="")
         objek_list.print_data()
         print("-" * 30)
 
 # Fitur 4: Cari nama dan statusnya
-def fitur_4_role (data, nama_dituju):
+def fitur_4_role (data, nama_dituju, proses):
+    '''
+    Pencarian menggunakan DFS
+    '''
+    print("-"*30)
     nama_dituju = nama_dituju.replace(" ", "")
+    proses = True if proses.lower() == 'y' else False
+    if proses:
+        print("Melakukan pencarian menggunakan DFS")
+        print('-'*30)
     for role, orang in data.items():
         temp = orang.head
         while temp is not None:
-            if temp.data.lower() == nama_dituju.lower():
+            if proses:
+                print(f"Apakah nama {temp.data} mengandung kata {nama_dituju}?")
+            if nama_dituju.lower() in temp.data.lower():
+                if proses:
+                    print("Ya")
                 print(f'Nama: {temp.data}')
                 print(f'Role: {role}')
-                print("-" * 30)
                 return
+            
+            else:
+                if proses:
+                    print("Tidak")
             temp = temp.next
             
 
-def fitur_4_teman(data_teman, nama_dituju):
+def fitur_4_teman(data_teman, nama_dituju, proses):
+    '''
+    Pencarian menggunakan BFS
+    '''
+
+    print("-"*30)
+    proses = True if proses.lower() == 'y' else False
     nama_dituju = nama_dituju.replace(" ", "")
+
+    if proses:
+        print("Melakukan pencarian menggunakan BFS")
+        print('-'*30)
 
     nama_ditemukan = None
     for key in data_teman.keys():
         key_clean = str(key).lower().replace(" ", "")
-        if nama_dituju.lower() == key_clean:
+        if proses:
+            print(f"Apakah nama {key} mengandung kata {nama_dituju}?")
+        if nama_dituju.lower() in key_clean:
             nama_ditemukan = key
+            if proses:
+                print("Ya")
             break
-
+        else:
+            if proses:
+                print("Tidak")
     if nama_ditemukan:
+        print('Nama teman berdasarkan bobot relasi dan skill')
         print("Teman: ", end="")
         data_teman[nama_ditemukan].print_data()
         print("-" * 30)
@@ -184,8 +224,6 @@ def main(data_linkedlist1, data_teman):
         pilihan = int(pilihan)
     except:
         print("Tolong masukkan angka yang sesuai")
-        print("Tekan enter untuk kembali ke menu utama")
-        input()
 
     if pilihan == 1:
         print_all(data_linkedlist1)
@@ -193,10 +231,10 @@ def main(data_linkedlist1, data_teman):
         input()
 
     elif pilihan == 2:
-        print("Masukkan role pekerjaan: ")
         print("Role yang tersedia: " + ", ".join(data_linkedlist1.keys()))
-        target_role = input()
-        cari_role(data_linkedlist1, target_role)
+        target_role = input('Masukkan role pekerjaan: ')
+        proses = input('Apakah anda ingin melihat proses pencarian? (y/n): ')
+        cari_role(data_linkedlist1, target_role, proses)
         print("Tekan enter untuk kembali ke menu utama")
         input()
 
@@ -207,9 +245,10 @@ def main(data_linkedlist1, data_teman):
 
     elif pilihan == 4:
         namadituju = input('Siapa namanya? ')
+        proses = input('Apakah anda ingin melihat proses pencarian? (y/n): ')
         try:
-            fitur_4_role(data_linkedlist1, namadituju)
-            fitur_4_teman(data_teman, namadituju)
+            fitur_4_role(data_linkedlist1, namadituju, proses)
+            fitur_4_teman(data_teman, namadituju, proses)
         except:
             print("Nama tidak ditemukan")
         print("Tekan enter untuk kembali ke menu utama")
@@ -219,8 +258,11 @@ def main(data_linkedlist1, data_teman):
         print("Terima kasih telah menggunakan program ini")
         exit()
 
-    
-
+    else:
+        print('Tolong masukkan angka (1, 2, 3, 4, 0)')
+        print("Tekan enter untuk kembali ke menu utama")
+        input()
+        
 if __name__ == "__main__":
     df_sheet_role = read_data()
     df_sheet_friend = read_data_connection()
