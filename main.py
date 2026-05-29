@@ -38,8 +38,15 @@ class Linkedlist:
             temp = temp.next
         print("None")
     
+
+# Urutkan
+def sorting_data(df):
+    df = df.sort_values(by=['Bobot'], ascending=True)
+    return df
+
 # Untuk data sheet 1    
 def buat_linkedlist(df):
+    df = sorting_data(df)
     role_dict = {}
 
     for index, row in df.iterrows():
@@ -51,14 +58,11 @@ def buat_linkedlist(df):
             role_dict[role] = Linkedlist()
 
         # Tambahkan nama
-        role_dict[role].add(nama)
+        role_dict[role].add(nama + " (" + str(row['Bobot']) + ")")
 
     return role_dict
 
 # Untuk data sheet 2
-def sorting_data(df):
-    df = df.sort_values(by=['Bobot'], ascending=True)
-    return df
 
 def decode_ke_nama(df_convert, df_teman):
     '''
@@ -130,7 +134,7 @@ def cari_role(data, target_role, proses):
                 print("Tidak")
 
     if role_ditemukan:
-        print(f"Role: {role_ditemukan}")
+        print(f"Role dan bobot keahlian: {role_ditemukan}")
         print(f"Nama: ", end="")
         data[role_ditemukan].print_data()
         print("-" * 30)
@@ -165,8 +169,10 @@ def fitur_4_role (data, nama_dituju, proses):
             if nama_dituju.lower() in temp.data.lower():
                 if proses:
                     print("Ya")
-                print(f'Nama: {temp.data}')
+                
+                print("Role dan bobot keahlian")
                 print(f'Role: {role}')
+                print(f'Nama dan bobot: {temp.data}')
                 return
             
             else:
@@ -229,6 +235,8 @@ def main(data_linkedlist1, data_teman):
         print("Tolong masukkan angka yang sesuai")
 
     if pilihan == 1:
+        print("Role dan bobot keahlian")
+        print("-"*30)
         print_all(data_linkedlist1)
         print("Tekan enter untuk kembali ke menu utama")
         input()
