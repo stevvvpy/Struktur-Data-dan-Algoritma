@@ -245,6 +245,7 @@ def main(data_linkedlist1, data_teman):
         print("Role yang tersedia: " + ", ".join(data_linkedlist1.keys()))
         target_role = input('Masukkan role pekerjaan: ')
         proses = input('Apakah anda ingin melihat proses pencarian? (y/n): ')
+        print("-"*30)
         cari_role(data_linkedlist1, target_role, proses)
         print("Tekan enter untuk kembali ke menu utama")
         input()
